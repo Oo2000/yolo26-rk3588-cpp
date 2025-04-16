@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<!-- このHTML文書がHTML5で書かれていることを宣言する -->
+<html lang="ja">
+
+<head>
+    <!-- HTMLの文字コードをUTF-8に設定 -->
+    <meta charset="UTF-8">
+    <!-- モバイルブラウザでの表示を最適化するための設定 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 文字コードをUTF-8に設定 -->
+    <title>Sample Page HTML</title>
+    <!-- ブラウザのタブに表示されるタイトル -->
+
+    <style>
+        /* CSSでスタイル設定 */
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            text-align: center;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        img {
+            width: 200px;
+            height: auto;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <!-- ページの内容はすべてbodyタグ内に書く -->
+
+    <h1>ようこそ、HTMLの世界へ！ Welcome to the World of HTML</h1>
+    <!-- 最も大きな見出し。ページのタイトルや主題に使用 -->
+
+    <p>このページでは、HTMLの主要なタグをまとめて紹介します。</p>
+    <!-- 段落を表すタグ。本文の文章はpタグで囲む -->
+
+    <hr>
+    <!-- 水平線でコンテンツの区切りを示す -->
+     <!-- မျဉ်းကြောင်းတားထားတာ -->
+
+    <h2>画像タグ</h2>
+    <p>以下は画像の例です。</p>
+    <img src="https://placehold.jp/150x150.png" alt="猫の画像">
+    <!-- imgタグで画像を表示。srcは画像のURL、altは代替テキスト -->
+
+    <h2>リストタグ</h2>
+    <h3>順不同リスト（ul）</h3>
+    <ul> 
+        <!-- ul  -->
+        <li>りんご</li>
+        <li>みかん</li>
+        <li>バナナ</li>
+    </ul>
+    <!-- ulは黒丸付きのリスト。liは各リスト項目 -->
+
+    <h3>番号付きリスト（ol）</h3>
+    <ol>
+        <li>起きる</li>
+        <li>顔を洗う</li>
+        <li>朝ごはんを食べる</li>
+    </ol>
+    <!-- olは番号付きのリスト -->
+
+    <h2>テーブルタグ</h2>
+    <table>
+        <tr>
+            <th>名前</th>
+            <th>年齢</th>
+            <th>出身地</th>
+        </tr>
+        <tr>
+            <td>田中</td>
+            <td>25</td>
+            <td>東京</td>
+        </tr>
+        <tr>
+            <td>佐藤</td>
+            <td>30</td>
+            <td>大阪</td>
+        </tr>
+
+        <tr>
+            <td>Mike Miller</td>
+            <td>38</td>
+            <td>New York</td>
+        </tr>
+    </table>
+    <!-- tableで表を作成。trが行、thが見出しセル、tdがデータセル -->
+
+    <h2>フォームタグ</h2>
+    <form action="#" method="post" id="myForm">
+        <!-- ユーザーの入力を送信するためのフォーム。actionは送信先URL -->
+
+        <label>お名前：</label><br>
+        <input type="text" name="name"><br><br>
+        <!-- テキスト入力欄。name属性は送信データのキー -->
+
+        <label>メール：</label><br>
+        <input type="email" name="email"><br><br>
+        <!-- メールアドレス入力欄 -->
+         <!-- ဒါက ရိုက်တဲ့ Data ကို ပြန်သိမ်းတဲ့အခါ Label နဲ့ တွဲသိမ်းဖို့ -->
+
+        <label>ご意見：</label><br>
+        <textarea name="message" rows="4" cols="40"></textarea><br><br>
+        <!-- 複数行の入力欄（テキストエリア） -->
+
+        <button type="submit">送信</button>
+        <!-- 送信ボタン -->
+    </form>
+
+    <hr>
+    <!-- 区切り線 -->
+
+    <p>&copy; 2025 サンプルページ</p>
+    <!-- フッター的な著作権表示 -->
+
+    <script>
+        document.getElementById("myForm").addEventListener("submit", function (e) {
+            e.preventDefault(); // ページのリロードを防ぐ
+            const formData = new FormData(e.target);
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`); // 送信された内容を表示
+            }
+        });
+    </script>
+
+    <!-- Script ကို Body ရဲ့အနီးဆုံးမှာ ထားပြီးရေးရမယ် -->
+
+</body>
+
+</html>
