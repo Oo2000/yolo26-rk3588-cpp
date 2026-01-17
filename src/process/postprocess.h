@@ -11,7 +11,9 @@ namespace yolo
 {
     int GetConvDetectionResult(float **pBlob, std::vector<float> &DetectiontRects);                                                               // 浮点数版本
     int GetConvDetectionResultInt8(int8_t **pBlob, std::vector<int> &qnt_zp, std::vector<float> &qnt_scale, std::vector<float> &DetectiontRects); // int8版本
-    float RegDeq[16] = {0};
+    int GetConvDetectionResultOriginal(float **pBlob, std::vector<float> &DetectiontRects);
+    int GetConvDetectionResultInt8Original(int8_t **pBlob, std::vector<int> &qnt_zp, std::vector<float> &qnt_scale,
+                                   std::vector<float> &DetectiontRects);
 }
 
 #endif // RK3588_DEMO_POSTPROCESS_H

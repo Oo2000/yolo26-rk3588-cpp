@@ -65,9 +65,10 @@ nn_error_e Yolo26::LoadModel(const char *model_path)
     input_tensor_.data = malloc(input_tensor_.attr.size);
 
     auto output_shapes = engine_->GetOutputShapes();
-    if (output_shapes.size() != 6)
+    output_head_num_ = output_shapes.size();
+    if (output_head_num_ != 6 && output_head_num_ != 1)
     {
-        NN_LOG_ERROR("yolo26 output tensor number is not 6, but %ld", output_shapes.size());
+        NN_LOG_ERROR("yolo26 output tensor number is not 6 or 1, but %ld", output_shapes.size());
         return NN_RKNN_OUTPUT_ATTR_ERROR;
     }
     if (output_shapes[0].type == NN_TENSOR_FLOAT16)
@@ -122,23 +123,42 @@ nn_error_e Yolo26::Inference()
 
 nn_error_e Yolo26::Postprocess(const cv::Mat &img, std::vector<Detection> &objects)
 {
-    void *output_data[6];
-    for (int i = 0; i < 6; i++)
+    void *output_data[output_head_num_];
+    for (int i = 0; i < output_head_num_; i++)
     {
         output_data[i] = (void *)output_tensors_[i].data;
     }
     std::vector<float> DetectiontRects;
-    if (want_float_)
+    if(output_head_num_ == 6)
     {
-        // 使用浮点数版本的后处理，他也支持量化的模型
-        yolo::GetConvDetectionResult((float **)output_data, DetectiontRects);
-        // NN_LOG_INFO("use float version postprocess");
+        if (want_float_)
+        {
+            // 使用浮点数版本的后处理，他也支持量化的模型
+            yolo::GetConvDetectionResult((float **)output_data, DetectiontRects);
+            // NN_LOG_INFO("use float version postprocess");
+        }
+        else
+        {
+            // 使用量化版本的后处理，只能处理量化的模型
+            yolo::GetConvDetectionResultInt8((int8_t **)output_data, out_zps_, out_scales_, DetectiontRects);
+            // NN_LOG_INFO("use int8 version postprocess");
+        }
     }
-    else
+
+    if(output_head_num_ == 1)
     {
-        // 使用量化版本的后处理，只能处理量化的模型
-        yolo::GetConvDetectionResultInt8((int8_t **)output_data, out_zps_, out_scales_, DetectiontRects);
-        // NN_LOG_INFO("use int8 version postprocess");
+        if (want_float_)
+        {
+            // 使用浮点数版本的后处理，他也支持量化的模型
+            yolo::GetConvDetectionResultOriginal((float **)output_data, DetectiontRects);
+            // NN_LOG_INFO("use float version postprocess");
+        }
+        else
+        {
+            // 使用量化版本的后处理，只能处理量化的模型
+            yolo::GetConvDetectionResultInt8Original((int8_t **)output_data, out_zps_, out_scales_, DetectiontRects);
+            // NN_LOG_INFO("use int8 version postprocess");
+        }
     }
 
     int img_width = img.cols;

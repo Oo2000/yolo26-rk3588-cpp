@@ -70,7 +70,7 @@ int main(int argc, char **argv)
         cv::Mat orig_img = cv::imread(imgDir + '/' + fileNames[nIndex], 1);
         if (!orig_img.data)
         {
-            printf("cv::imread %s fail!\n", fileNames[nIndex]);
+            printf("cv::imread %s fail!\n", fileNames[nIndex].c_str());
             return -1;
         }
         for (int conNum = 0; conNum < loopNums; conNum++)

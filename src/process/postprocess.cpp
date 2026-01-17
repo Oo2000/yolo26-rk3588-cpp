@@ -455,4 +455,175 @@ namespace yolo
         return ret;
     }
 
+    // int8版本
+    int GetConvDetectionResultInt8Original(int8_t **pBlob, std::vector<int> &qnt_zp, std::vector<float> &qnt_scale,
+                                   std::vector<float> &DetectiontRects)
+    {
+        int ret = 0;
+        static auto meshgrid = GenerateMeshgrid();
+        
+        int gridIndex = -2;
+        float xmin = 0, ymin = 0, xmax = 0, ymax = 0;
+        float cls_val = 0;
+        float cls_max = 0;
+        int cls_index = 0;
+
+        int quant_zp = qnt_zp[0];
+        float quant_scale = qnt_scale[0];
+
+        float sfsum = 0;
+        float locval = 0;
+        float locvaltemp = 0;
+
+        std::vector<DetectRect> detectRects;
+
+        int8_t *result = (int8_t *)pBlob[0];
+
+        for(int i=0; i<300 ; i++)
+        {
+            xmin = DeQnt2F32(result[i*6+0],quant_zp,quant_scale);
+            ymin = DeQnt2F32(result[i*6+1],quant_zp,quant_scale);
+            xmax = DeQnt2F32(result[i*6+2],quant_zp,quant_scale);
+            ymax = DeQnt2F32(result[i*6+3],quant_zp,quant_scale);
+            cls_max = DeQnt2F32(result[i*6+4],quant_zp,quant_scale);
+            cls_index = result[i*6 + 5];
+
+            if (cls_max > objectThreshold && xmin >= 0 && ymin >= 0 && xmax <= input_w && ymax <= input_h)
+            {
+                DetectRect temp;
+                temp.xmin = xmin / input_w;
+                temp.ymin = ymin / input_h;
+                temp.xmax = xmax / input_w;
+                temp.ymax = ymax / input_h;
+                temp.classId = cls_index;
+                temp.score = cls_max;
+                detectRects.push_back(temp);
+            }
+        }
+
+        // std::sort(detectRects.begin(), detectRects.end(), [](DetectRect &Rect1, DetectRect &Rect2) -> bool
+        //           { return (Rect1.score > Rect2.score); });
+
+        for (int i = 0; i < detectRects.size(); ++i)
+        {
+            float xmin1 = detectRects[i].xmin;
+            float ymin1 = detectRects[i].ymin;
+            float xmax1 = detectRects[i].xmax;
+            float ymax1 = detectRects[i].ymax;
+            int classId = detectRects[i].classId;
+            float score = detectRects[i].score;
+
+            if (classId != -1)
+            {
+                // 将检测结果按照classId、score、xmin1、ymin1、xmax1、ymax1 的格式存放在vector<float>中
+                DetectiontRects.push_back(float(classId));
+                DetectiontRects.push_back(float(score));
+                DetectiontRects.push_back(float(xmin1));
+                DetectiontRects.push_back(float(ymin1));
+                DetectiontRects.push_back(float(xmax1));
+                DetectiontRects.push_back(float(ymax1));
+
+                // for (int j = i + 1; j < detectRects.size(); ++j)
+                // {
+                //     float xmin2 = detectRects[j].xmin;
+                //     float ymin2 = detectRects[j].ymin;
+                //     float xmax2 = detectRects[j].xmax;
+                //     float ymax2 = detectRects[j].ymax;
+                //     float iou = IOU(xmin1, ymin1, xmax1, ymax1, xmin2, ymin2, xmax2, ymax2);
+                //     if (iou > nmsThreshold)
+                //     {
+                //         detectRects[j].classId = -1;
+                //     }
+                // }
+            }
+        }
+
+        return ret;
+    }
+    // 浮点数版本
+    int GetConvDetectionResultOriginal(float **pBlob, std::vector<float> &DetectiontRects)
+    {
+        static auto meshgrid = GenerateMeshgrid();
+        int ret = 0;
+        int gridIndex = -2;
+        float xmin = 0, ymin = 0, xmax = 0, ymax = 0;
+        float cls_val = 0;
+        float cls_max = 0;
+        int cls_index = 0;
+
+        float sfsum = 0;
+        float locval = 0;
+        float locvaltemp = 0;
+
+        float *result = (float *)pBlob[0];
+
+        DetectRect temp;
+        std::vector<DetectRect> detectRects;
+
+
+        for(int i=0; i<300 ; i++)
+        {
+            xmin = result[i*6+0];
+            ymin = result[i*6+1];
+            xmax = result[i*6+2];
+            ymax = result[i*6+3];
+            cls_max = result[i*6+4];
+            cls_index = result[i*6 + 5] / 1;
+        
+            xmin = xmin > 0 ? xmin : 0;
+            ymin = ymin > 0 ? ymin : 0;
+            xmax = xmax < input_w ? xmax : input_w;
+            ymax = ymax < input_h ? ymax : input_h;
+
+            if (cls_max > objectThreshold && xmin >= 0 && ymin >= 0 && xmax <= input_w && ymax <= input_h)
+            {
+                temp.xmin = xmin / input_w;
+                temp.ymin = ymin / input_h;
+                temp.xmax = xmax / input_w;
+                temp.ymax = ymax / input_h;
+                temp.classId = cls_index;
+                temp.score = cls_max;
+                detectRects.push_back(temp);
+            }
+        }
+        // std::sort(detectRects.begin(), detectRects.end(), [](DetectRect &Rect1, DetectRect &Rect2) -> bool
+        //           { return (Rect1.score > Rect2.score); });
+
+        for (int i = 0; i < detectRects.size(); ++i)
+        {
+            float xmin1 = detectRects[i].xmin;
+            float ymin1 = detectRects[i].ymin;
+            float xmax1 = detectRects[i].xmax;
+            float ymax1 = detectRects[i].ymax;
+            int classId = detectRects[i].classId;
+            float score = detectRects[i].score;
+
+            if (classId != -1)
+            {
+                // 将检测结果按照classId、score、xmin1、ymin1、xmax1、ymax1 的格式存放在vector<float>中
+                DetectiontRects.push_back(float(classId));
+                DetectiontRects.push_back(float(score));
+                DetectiontRects.push_back(float(xmin1));
+                DetectiontRects.push_back(float(ymin1));
+                DetectiontRects.push_back(float(xmax1));
+                DetectiontRects.push_back(float(ymax1));
+
+                // for (int j = i + 1; j < detectRects.size(); ++j)
+                // {
+                //     float xmin2 = detectRects[j].xmin;
+                //     float ymin2 = detectRects[j].ymin;
+                //     float xmax2 = detectRects[j].xmax;
+                //     float ymax2 = detectRects[j].ymax;
+                //     float iou = IOU(xmin1, ymin1, xmax1, ymax1, xmin2, ymin2, xmax2, ymax2);
+                //     if (iou > nmsThreshold)
+                //     {
+                //         detectRects[j].classId = -1;
+                //     }
+                // }
+            }
+        }
+
+        return ret;
+    }
+
 }

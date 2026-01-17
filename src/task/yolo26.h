@@ -32,6 +32,7 @@ private:
     std::vector<int32_t> out_zps_;
     std::vector<float> out_scales_;
     std::shared_ptr<NNEngine> engine_;
+    int output_head_num_ = 6;
 };
 
 #endif // RK3588_DEMO_YOLO26_CUSTOM_H
