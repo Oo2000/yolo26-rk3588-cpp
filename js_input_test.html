@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>名前入力フォーム</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 40px;
+    }
+    #output {
+      margin-top: 20px;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body id="body">
+
+  <h2>あなたの名前を入力してください</h2>
+  <h2>Please Input your name.</h2>
+
+  <form id="nameForm">
+    <label for="username">名前：</label>
+    <input type="text" id="username" name="username" required>
+    <button type="submit">送信 <br>Subimt</button>
+  </form>
+
+  <div id="output"></div>
+  <!-- javascript သုံးရင် >< အပေါ်မှာ တစ်ခုခု ရေးလို့ရ  -->
+
+  <script>
+    // フォームが送信されたときの処理
+    document.getElementById("nameForm").addEventListener("submit", function(event) {
+      event.preventDefault(); // ページのリロードを防止
+
+      const name = document.getElementById("username").value; // 入力値を取得
+
+      console.log("入力された名前：", name); // コンソールに出力
+
+      document.getElementById("output").textContent = `こんにちは、${name}さん！`; // 画面に表示
+    });
+  </script>
+
+</body>
+</html>

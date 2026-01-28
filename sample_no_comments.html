@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTMLタグの総合サンプル</title>
+
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+        }
+
+        img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>ようこそ、HTMLの世界へ！</h1>
+    <p>このページでは、HTMLの主要なタグをまとめて紹介します。</p>
+
+    <hr>
+
+    <h2>画像タグ</h2>
+    <p>以下は画像の例です。</p>
+    <img src="https://placehold.jp/150x150.png" alt="猫の画像">
+
+    <h2>リストタグ</h2>
+    <h3>順不同リスト（ul）</h3>
+    <ul>
+        <li>りんご</li>
+        <li>みかん</li>
+        <li>バナナ</li>
+    </ul>
+
+    <h3>番号付きリスト（ol）</h3>
+    <ol>
+        <li>起きる</li>
+        <li>顔を洗う</li>
+        <li>朝ごはんを食べる</li>
+    </ol>
+
+    <h2>テーブルタグ</h2>
+    <table>
+        <tr>
+            <th>名前</th>
+            <th>年齢</th>
+            <th>出身地</th>
+        </tr>
+        <tr>
+            <td>田中</td>
+            <td>25</td>
+            <td>東京</td>
+        </tr>
+        <tr>
+            <td>佐藤</td>
+            <td>30</td>
+            <td>大阪</td>
+        </tr>
+    </table>
+
+    <h2>フォームタグ</h2>
+    <form action="#" method="post" id="myForm">
+
+        <label>お名前：</label><br>
+        <input type="text" name="name"><br><br>
+
+        <label>メール：</label><br>
+        <input type="email" name="email"><br><br>
+
+        <label>ご意見：</label><br>
+        <textarea name="message" rows="4" cols="40"></textarea><br><br>
+
+        <button type="submit">送信</button>
+    </form>
+
+    <hr>
+
+    <p>&copy; 2025 サンプルページ</p>
+
+    <script>
+        document.getElementById("myForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            for (const [key, value] of formData.entries()) {
+                console.log(`${key}: ${value}`);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
